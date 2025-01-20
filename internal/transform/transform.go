@@ -27,6 +27,7 @@ type TransformOptions struct {
 	SourceMap               string
 	AstroGlobalArgs         string
 	ScopedStyleStrategy     string
+	GlobalStyles            bool
 	Compact                 bool
 	ResultScopedSlot        bool
 	TransitionsAnimationURL string

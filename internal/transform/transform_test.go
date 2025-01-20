@@ -11,16 +11,18 @@ import (
 )
 
 func transformScopingFixtures() []struct {
-	name       string
-	source     string
-	want       string
-	scopeStyle string // "attribute" | "class" | "where"
+	name         string
+	source       string
+	want         string
+	scopeStyle   string // "attribute" | "class" | "where"
+	globalStyles bool
 } {
 	return []struct {
-		name       string
-		source     string
-		want       string
-		scopeStyle string
+		name         string
+		source       string
+		want         string
+		scopeStyle   string
+		globalStyles bool
 	}{
 		{
 			name: "basic",
@@ -134,6 +136,26 @@ func transformScopingFixtures() []struct {
 			want: `<div></div>`,
 		},
 		{
+			name: "globalStyles does not scope",
+			source: `
+				<style>div{}</style>
+				<div />
+			`,
+			want:         `<div></div>`,
+			scopeStyle:   "attribute",
+			globalStyles: true,
+		},
+		{
+			name: "is:scoped overrides globalStyles",
+			source: `
+				<style is:scoped>div{}</style>
+				<div />
+			`,
+			want:         `<div data-astro-cid-xxxxxx></div>`,
+			scopeStyle:   "attribute",
+			globalStyles: true,
+		},
+		{
 			name: "attribute -> creates a new data attribute",
 			source: `
 				<style>.class{}</style>
@@ -191,7 +213,8 @@ func TestTransformScoping(t *testing.T) {
 			} else {
 				scopeStyle = "where"
 			}
-			Transform(doc, TransformOptions{Scope: "xxxxxx", ScopedStyleStrategy: scopeStyle}, handler.NewHandler(tt.source, "/test.astro"))
+			var globalStyles = tt.globalStyles || false
+			Transform(doc, TransformOptions{Scope: "xxxxxx", ScopedStyleStrategy: scopeStyle, GlobalStyles: globalStyles}, handler.NewHandler(tt.source, "/test.astro"))
 			astro.PrintToSource(&b, doc.LastChild.FirstChild.NextSibling.FirstChild)
 			got := b.String()
 			if tt.want != got {

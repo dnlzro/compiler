@@ -133,6 +133,11 @@ func makeTransformOptions(options js.Value) transform.TransformOptions {
 		scopedStyleStrategy = "where"
 	}
 
+	globalStyles := false
+	if jsBool(options.Get("globalStyles")) {
+		globalStyles = true
+	}
+
 	renderScript := false
 	if jsBool(options.Get("renderScript")) {
 		renderScript = true
@@ -149,6 +154,7 @@ func makeTransformOptions(options js.Value) transform.TransformOptions {
 		PreprocessStyle:         preprocessStyle,
 		ResultScopedSlot:        scopedSlot,
 		ScopedStyleStrategy:     scopedStyleStrategy,
+		GlobalStyles:            globalStyles,
 		TransitionsAnimationURL: transitionsAnimationURL,
 		AnnotateSourceFile:      annotateSourceFile,
 		RenderScript:            renderScript,

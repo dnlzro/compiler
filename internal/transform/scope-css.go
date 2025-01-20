@@ -33,6 +33,9 @@ func ScopeStyle(styles []*astro.Node, opts TransformOptions) bool {
 				continue
 			}
 		}
+		if opts.GlobalStyles && !hasTruthyAttr(n, "is:scoped") {
+			continue
+		}
 		didScope = true
 		n.Attr = append(n.Attr, astro.Attribute{
 			Key: "data-astro-id",

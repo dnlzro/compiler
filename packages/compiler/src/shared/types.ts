@@ -48,6 +48,7 @@ export interface TransformOptions {
 	compact?: boolean;
 	resultScopedSlot?: boolean;
 	scopedStyleStrategy?: 'where' | 'class' | 'attribute';
+	globalStyles?: boolean;
 	/**
 	 * @deprecated "as" has been removed and no longer has any effect!
 	 */
